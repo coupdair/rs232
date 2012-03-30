@@ -13,22 +13,12 @@
      */
 using namespace std;
 
-//int open_port(void)
-//{
-//return(fd);
- 
-//}//open_port
-
-
-int main(void)
-{
-
-  //  int fd = open_port();
-  int fd; /* File descriptor for the port */
-
   //OPEN
-  
-  fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+
+int open(string port)
+{
+  int fd; /* File descriptor for the port */  
+  fd = open((const char*)port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd == -1)
     {
       perror("open_port: Unable to open /dev/ttyUSB0 - ");
@@ -39,7 +29,13 @@ int main(void)
       printf("port is open.\n");
     }
   
-  //  return(fd);
+  return(fd);
+}
+
+int main(void) 
+{ 
+  string port="/dev/ttyUSB0";
+  int fd=open(port);
   // WRITE and READ
   char buffer[255];  /* Input buffer */
   char *bufptr;      /* Current char in buffer */
