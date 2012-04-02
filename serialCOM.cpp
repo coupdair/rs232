@@ -1,3 +1,6 @@
+#ifndef serial
+#define serial
+
 #include <iostream>
 #include <stdio.h>   /* Standard input/output definitions */
 #include <string.h>  /* String function definitions */
@@ -12,6 +15,21 @@
      * Returns the file descriptor on success or -1 on error.
      */
 using namespace std;
+
+int main(void) 
+{ 
+  // OPEN 
+  string port="/dev/ttyUSB0";
+  int fd=serial_open(port);
+  // WRITE 
+  string message="INST:CNUM?";
+  serial_write(fd,message);
+  // READ
+  string value;
+  serial_read(fd,value);
+  cout << value << endl;
+   return (0);
+}
 
 //! Open serial port
 /** 
@@ -35,6 +53,15 @@ int serial_open(string port)
     }  
   return(fd);
 }
+
+//! write on serial port
+/** 
+ *
+ * @param[in] fd= state of port 
+ * @param[in] message= string to send to serial port  
+ *
+ * @return 
+ */
 int serial_write(int fd,string message)
 {
   int  tries=0;        /* Number of tries so far */
@@ -54,10 +81,18 @@ int serial_write(int fd,string message)
 	}
       cerr << "rs232 not ready, retry" << endl;
     }
-    cerr << "write ok" << endl;
+    cerr << "write OK" << endl;
     return 0;
 }
 
+//! write on serial port
+/** 
+ *
+ * @param[in] fd= state of port 
+ * @param[out] value= value returned by serial port
+ *
+ * @return 
+ */
 int serial_read(int fd,string &value)
 {
   char buffer[255];  /* Input buffer */
@@ -76,21 +111,6 @@ int serial_read(int fd,string &value)
 	//cout << buffer << endl;
 	close(fd);
 	value=buffer;
-   return (0);
-}
-
-int main(void) 
-{ 
-  // OPEN 
-  string port="/dev/ttyUSB0";
-  int fd=serial_open(port);
-  // WRITE 
-  string message="INST:CNUM?";
-  serial_write(fd,message);
-  // READ
-  string value;
-  serial_read(fd,value);
-  cout << value << endl;
    return (0);
 }
 
