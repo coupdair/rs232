@@ -31,63 +31,66 @@ int serial_open(string port)
   else	
     {
       fcntl(fd, F_SETFL, 0);
-      printf("port is open.\n");
+      cerr << "port is open"<<endl;
     }  
   return(fd);
 }
 int serial_write(int fd,string message)
 {
-  int  tries;        /* Number of tries so far */
+  int  tries=0;        /* Number of tries so far */
   message.append("\r");
   //cout << message << endl;
   //cout << message.size()<< endl;
-   for (tries = 0; tries < 3; tries ++)
-      {
-  	if (write(fd,(const char*)message.c_str(),message.size()) <message.size())
-	  {
-	  cout << "write ok" << endl;
-	  break;
-	  }
-	  cout << "try again ..." << endl;
-      }
-   return 0;
+  while (write(fd,(const char*)message.c_str(),message.size()) <message.size())
+    {
+      tries++;
+  //    {
+  //    if (write(fd,(const char*)message.c_str(),message.size()) <message.size())
+  // 	  break;
+      if (tries > 3)
+	{
+	  cerr << "write KO :(" << endl;
+	  return 1;
+	}
+      cerr << "rs232 not ready, retry" << endl;
+    }
+    cerr << "write ok" << endl;
+    return 0;
 }
 
-int main(void) 
-{ 
-  string port="/dev/ttyUSB0";
-  int fd=serial_open(port);
-  // WRITE 
-  string message="INST:CNUM?";
-  serial_write(fd,message);
-  //READ
+int serial_read(int fd,string &value)
+{
   char buffer[255];  /* Input buffer */
   char *bufptr;      /* Current char in buffer */
   int  nbytes;       /* Number of bytes read */
 
-  //if (write(fd, "INST:CNUM?\r",11) <11)
-	  //  continue;
-	//  int n = write(fd, "*IDN?\r", 6);
-	//if (n < 0)
-	//fputs("write() of 6 bytes failed!\n", stderr);
-	//n =read(fd,"",10);
 	bufptr = buffer;
-	//	  fcntl(fd, F_SETFL, FNDELAY);
 	while ((nbytes = read(fd, bufptr, buffer + sizeof(buffer) - bufptr - 1)) > 0)
 	  {
-cout<<"nbytes="<<nbytes<<"\n";
+	    //cout<<"nbytes="<<nbytes<<"\n";
 	    bufptr += nbytes;
 	    if (bufptr[-1] == '\n' || bufptr[-1] == '\r')
 	      break;
 	  }
 	buffer[bufptr-buffer-1]='\0';
-	//CLOSE 
-
-	cout << buffer << endl;
+	//cout << buffer << endl;
 	close(fd);
-	//        cout << "Hello World!\n";
-	
-       //main
+	value=buffer;
+   return (0);
+}
+
+int main(void) 
+{ 
+  // OPEN 
+  string port="/dev/ttyUSB0";
+  int fd=serial_open(port);
+  // WRITE 
+  string message="INST:CNUM?";
+  serial_write(fd,message);
+  // READ
+  string value;
+  serial_read(fd,value);
+  cout << value << endl;
    return (0);
 }
 
