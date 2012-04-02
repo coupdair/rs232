@@ -1,4 +1,4 @@
-PROGRAMS = rs232
+PROGRAMS = serialget
 DOCUMENTATIONS = doc
 
 OPT = 
@@ -8,9 +8,9 @@ CPP = g++
 
 all: $(PROGRAMS) $(DOCUMENTATIONS)
 
-rs232: serialCOM_v2.cpp  
-	$(CPP) $(OPT) serialCOM_v2.cpp -o $@
-doc: rs232.Doxygen serialCOM_v2.cpp 
+rs232: serial.get.cpp  
+	$(CPP) $(OPT) serial.get.cpp -o $@
+doc: rs232.Doxygen serial.get.cpp 
 	./doxIt.sh
 
 clean:
