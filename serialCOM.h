@@ -6,7 +6,6 @@ class serialCOM
  public:
   string port;
   string message;
-  string value;
 
   //! Open serial port
   /** 

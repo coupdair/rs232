@@ -23,13 +23,9 @@ int main(void)
   serial.port="/dev/ttyUSB0";
   int fd=serial.opens();
   // WRITE 
-  serial.message="INST:CNUM?";
+ serial.message="INST:CNUM?";
+ cerr << "write:" << serial.message <<endl;
   serial.writes(fd);
-  // READ
-  string value;
-  serial.reads(fd,value);
-  cout << value << endl;
-   return (0);
 }
 
 
