@@ -1,12 +1,13 @@
-PROGRAMS = rs232
+PROGRAMS = get put  
 DOCUMENTATIONS = doc
 
-OPT = 
-LIBCImg = -I/usr/X11R6/include -Dcimg_use_xshm -Dcimg_use_xrandr -L/usr/X11R6/lib -lpthread -lX11 -lXext -lXrandr
+OPT = -Dcimg_display=0
 CC = gcc
 CPP = g++
 
 all: $(PROGRAMS) $(DOCUMENTATIONS)
+
+prog:$(PROGRAMS)
 
 get: serial.get.cpp  
 	$(CPP) $(OPT) serial.get.cpp -o $@

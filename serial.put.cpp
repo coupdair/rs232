@@ -23,6 +23,14 @@ int main(int argc, char *argv[])
   const bool        show_help  = (cimg_option("-h",(const char*)NULL,"information")!=NULL);
   const std::string SerialPath =  cimg_option("--path","/dev/ttyUSB0","Path serial device");
   const std::string Message =  cimg_option("--message","CONF:GAIN 1","Message to write to serial port (the example set the IFA300 gain to 1");
+ if( cimg_option("-I",(const char*)NULL,"show compilation options") != NULL )
+
+  {
+
+    cimg_library::cimg::info();
+
+  }
+
 
   if (show_help|show_info)
     return 0; // program stops after printing the information
@@ -38,7 +46,7 @@ int main(int argc, char *argv[])
   // WRITE 
  serial.message=Message;
  cerr << "write:" << serial.message <<endl;
-  serial.writes(fd);
+ serial.writes(fd);
 }
 
 
