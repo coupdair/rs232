@@ -22,14 +22,16 @@ int main(int argc, char *argv[])
   serialCOM serial;
 // OPEN 
   serial.port=SerialPath;
-  int fd=serial.opens();
+  if(!serial.opens())  return 1;
 // WRITE 
   serial.message=Message;
-  serial.writes(fd);
+  if(!serial.writes()) return 1;
 // READ
   std::string value;
-  serial.reads(fd,value);
+  serial.reads(value);
   std::cout << value << std::endl;
+//CLOSE
+  serial.closes();
   return 0;
 }//main
 

@@ -10,12 +10,16 @@
 #include <termios.h> /* POSIX terminal control definitions */
 
 class serialCOM
-{ 
- public:
+{
+  //!File descriptor for the port
+  int fd;
+public:
+  //! port path name (e.g. "/dev/ttyUSB0")
   std::string port;
+  //! message to send or received (e.g. "CONF:GAIN 1")
   std::string message;
-//! \todo [high] add \c fd as member (so, read and write without)
-//! \todo [] add open() with \c port_path
+//! \todo [high] v add \c fd as member (so, read and write without)
+//! \todo [high] _ add open() with \c port_path
 
 //! \todo [low] move open, write and read to .cpp (i.e. need Makefile changes)
 
@@ -26,37 +30,33 @@ class serialCOM
    *
    * @return 
    */
-  int opens()
+  bool opens()
   {
-    int fd; /* File descriptor for the port */  
-    fd = open((const char*)port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
+    fd=open((const char*)port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd == -1)
-      {
-	perror("open_port: Unable to open /dev/ttyUSB0 - ");
-      }
-    else	
-      {
-	fcntl(fd, F_SETFL, 0);
-	std::cerr << "port is open"<<std::endl;
-      }  
-    return(fd);
-  }
+    {
+      perror(std::string("open_port: Unable to open "+port+" port.").c_str());//e.g. /dev/ttyUSB0
+      return false;
+    }
+    fcntl(fd, F_SETFL, 0);
+    std::cerr << "port is open"<<std::endl;
+    return true;
+  }//opens
   
   //! write on serial port
   /** 
    *
-   * @param[in] fd= File descriptor for the port 
    * @param[in] message= string to send to serial port  
    *
    * @return 
    */
-  int writes(int fd)
+  bool writes()
   {
     int  tries=0;        /* Number of tries so far */
     message.append("\r");
     //cout << message << endl;
     //cout << message.size()<< endl;
-    while (write(fd,(const char*)message.c_str(),message.size()) <message.size())
+    while(write(fd,(const char*)message.c_str(),message.size()) <message.size())
       {
 	tries++;
 	//    {
@@ -65,23 +65,22 @@ class serialCOM
 	if (tries > 3)
 	  {
 	    std::cerr << "write KO :(" << std::endl;
-	    return 1;
+	    return false;
 	  }
 	std::cerr << "rs232 not ready, retry" << std::endl;
-      }
+      }//try loop
     std::cerr << "write OK" << std::endl;
-    return 0;
+    return true;
   }//writes
 
   //! read on serial port
   /** 
    *
-   * @param[in] fd= File descriptor for the port 
    * @param[out] value= value returned by serial port
    *
    * @return 
    */
-  int reads(int fd,std::string& value)
+  bool reads(std::string& value)
   {
     char buffer[255];  /* Input buffer */
     char *bufptr;      /* Current char in buffer */
@@ -99,11 +98,22 @@ class serialCOM
       }
     std::cerr << "read OK" << std::endl;
     buffer[bufptr-buffer-1]='\0';
+//! \bug please do not close fd here !, \see closes
     //std::cout << buffer << endl;
-    close(fd);
     value=buffer;
-    return (0);
+    return true;
   }//reads
+
+  //! Close serial port
+  /** 
+   *
+   * @return 
+   */
+  bool closes()
+  {
+    close(fd);
+    return true;
+  }//closes
 
 };//serialCOM class
 
