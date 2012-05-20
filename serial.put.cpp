@@ -14,8 +14,6 @@ using namespace std;
 
 #include "serialCOM.h"
 
-//!todo: add CIMG library for command lines
-
 int main(int argc, char *argv[])
 { 
   const int         verbose    = (cimg_option("-v",(const char*)NULL,"verbose option")!=NULL);
@@ -46,10 +44,6 @@ int main(int argc, char *argv[])
   // WRITE 
  serial.message=Message;
  cerr << "write:" << serial.message <<endl;
- serial.writes(fd);
-}
-
-
-
-
+  return serial.writes(fd);
+}//main
 

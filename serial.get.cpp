@@ -16,8 +16,6 @@ using namespace std;
 //class serial communication
 #include "serialCOM.h"
 
-//!todo: add CIMG library for command lines
-
 int main(int argc, char *argv[])
 { 
   const int         verbose    = (cimg_option("-v",(const char*)NULL,"verbose option")!=NULL);
@@ -50,10 +48,6 @@ if( cimg_option("-I",(const char*)NULL,"show compilation options") != NULL )
   string value;
   serial.reads(fd,value);
   cout << value << endl;
-   return (0);
-}
-
-
-
-
+  return 0;
+}//main
 

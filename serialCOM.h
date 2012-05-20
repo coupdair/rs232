@@ -1,11 +1,21 @@
-//#ifndef serial
-//#define serial
+#ifndef SERIAL_COMMUNICATION
+#define SERIAL_COMMUNICATION
+
+#include <iostream>
+#include <stdio.h>   /* Standard input/output definitions */
+#include <string.h>  /* String function definitions */
+#include <unistd.h>  /* UNIX standard function definitions */
+#include <fcntl.h>   /* File control definitions */
+#include <errno.h>   /* Error number definitions */
+#include <termios.h> /* POSIX terminal control definitions */
 
 class serialCOM
 { 
  public:
-  string port;
-  string message;
+  std::string port;
+  std::string message;
+//! \todo add \c fd as member (so, read and write without)
+//! \todo add open() with \c port_path
 
   //! Open serial port
   /** 
@@ -52,16 +62,16 @@ class serialCOM
 	// 	  break;
 	if (tries > 3)
 	  {
-	    cerr << "write KO :(" << endl;
+	    std::cerr << "write KO :(" << std::endl;
 	    return 1;
 	  }
-	cerr << "rs232 not ready, retry" << endl;
+	std::cerr << "rs232 not ready, retry" << std::endl;
       }
-    cerr << "write OK" << endl;
+    std::cerr << "write OK" << std::endl;
     return 0;
-  }
+  }//writes
 
-  //! write on serial port
+  //! read on serial port
   /** 
    *
    * @param[in] fd= File descriptor for the port 
@@ -74,39 +84,26 @@ class serialCOM
     char buffer[255];  /* Input buffer */
     char *bufptr;      /* Current char in buffer */
     int  nbytes;       /* Number of bytes read */
-    //string value;
+    //std::string value;
 
     bufptr = buffer;
     while ((nbytes = read(fd, bufptr, buffer + sizeof(buffer) - bufptr - 1)) > 0)
       {
-	cerr << "reading buffer" << endl;
-	//cout<<"nbytes="<<nbytes<<"\n";
+	std::cerr << "reading buffer" << std::endl;
+	//std::cout<<"nbytes="<<nbytes<<"\n";
 	bufptr += nbytes;
 	if (bufptr[-1] == '\n' || bufptr[-1] == '\r')
 	  break;
       }
-    cerr << "read OK" << endl;
+    std::cerr << "read OK" << std::endl;
     buffer[bufptr-buffer-1]='\0';
-    //cout << buffer << endl;
+    //std::cout << buffer << endl;
     close(fd);
     value=buffer;
     return (0);
-  } 
+  }//reads
+
 };//serialCOM class
 
-
-//#endif// serial
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif //SERIAL_COMMUNICATION
 
