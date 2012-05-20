@@ -1,7 +1,7 @@
 PROGRAMS = get put  
 DOCUMENTATIONS = doc
 
-OPT = -Dcimg_display=0
+OPT = -Dcimg_display=0 -Dcimg_debug=2
 CC = gcc
 CPP = g++
 

@@ -14,8 +14,10 @@ class serialCOM
  public:
   std::string port;
   std::string message;
-//! \todo add \c fd as member (so, read and write without)
-//! \todo add open() with \c port_path
+//! \todo [high] add \c fd as member (so, read and write without)
+//! \todo [] add open() with \c port_path
+
+//! \todo [low] move open, write and read to .cpp (i.e. need Makefile changes)
 
   //! Open serial port
   /** 
@@ -35,7 +37,7 @@ class serialCOM
     else	
       {
 	fcntl(fd, F_SETFL, 0);
-	cerr << "port is open"<<endl;
+	std::cerr << "port is open"<<std::endl;
       }  
     return(fd);
   }
@@ -79,7 +81,7 @@ class serialCOM
    *
    * @return 
    */
-  int reads(int fd,string& value)
+  int reads(int fd,std::string& value)
   {
     char buffer[255];  /* Input buffer */
     char *bufptr;      /* Current char in buffer */
