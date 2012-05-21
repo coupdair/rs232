@@ -9,6 +9,9 @@
 #include <errno.h>   /* Error number definitions */
 #include <termios.h> /* POSIX terminal control definitions */
 
+#define SERIAL_OPEN_ERROR  -1
+#define SERIAL_CLOSED      -2
+
 class serialCOM
 {
   //!File descriptor for the port
@@ -16,12 +19,16 @@ class serialCOM
 public:
   //! port path name (e.g. "/dev/ttyUSB0")
   std::string port;
-  //! message to send or received (e.g. "CONF:GAIN 1")
+//! \todo [high] _ \c port_name for information only (remove \c port).
+//! \todo [next] _ replace \c fd by \c port.
+  //! message to send or received (e.g. "CONF:GAIN 1") for information only.
   std::string message;
-//! \todo [high] v add \c fd as member (so, read and write without)
-//! \todo [high] _ add open() with \c port_path
+//! \todo [high] v add opens() with \c port_path and writes with message.
+//! \todo [high] _ \c last_message_written, \c last_message_readed (remove \c message).
 
-//! \todo [low] move open, write and read to .cpp (i.e. need Makefile changes)
+//! \todo [medium] _ error handling: init fd to SERIAL_CLOSED (i.e. constructor), return code error in all functions but opens() (i.e. if(fd!=SERIAL_CLOSED) closes(); ).
+//! \todo [next]   _ call closes in destructor (e.g. add also if(fd!=SERIAL_CLOSED) in closes).
+//! \todo [low] move opens, writes, reads and closes to .cpp (i.e. need Makefile changes)
 
   //! Open serial port
   /** 
@@ -33,14 +40,27 @@ public:
   bool opens()
   {
     fd=open((const char*)port.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
-    if (fd == -1)
+    if (fd == SERIAL_OPEN_ERROR)
     {
-      perror(std::string("open_port: Unable to open "+port+" port.").c_str());//e.g. /dev/ttyUSB0
+      std::cerr<<"open_port: Unable to open "<<port<<" port.\n";//e.g. /dev/ttyUSB0
       return false;
     }
     fcntl(fd, F_SETFL, 0);
     std::cerr << "port is open"<<std::endl;
     return true;
+  }//opens
+
+  //! Open serial port
+  /** 
+   *
+   * @param[in] port 
+   *
+   * @return 
+   */
+  bool opens(const std::string& port_path)
+  {
+    port=port_path;
+    return opens();
   }//opens
   
   //! write on serial port
@@ -50,18 +70,14 @@ public:
    *
    * @return 
    */
-  bool writes()
+  bool writes(std::string value)
   {
+    message=value;
+    value.append("\r");
     int  tries=0;        /* Number of tries so far */
-    message.append("\r");
-    //cout << message << endl;
-    //cout << message.size()<< endl;
-    while(write(fd,(const char*)message.c_str(),message.size()) <message.size())
+    while(write(fd,(const char*)value.c_str(),value.size()) <value.size())
       {
 	tries++;
-	//    {
-	//    if (write(fd,(const char*)message.c_str(),message.size()) <message.size())
-	// 	  break;
 	if (tries > 3)
 	  {
 	    std::cerr << "write KO :(" << std::endl;
@@ -101,6 +117,7 @@ public:
 //! \bug please do not close fd here !, \see closes
     //std::cout << buffer << endl;
     value=buffer;
+    message=value;//for information
     return true;
   }//reads
 
@@ -112,6 +129,7 @@ public:
   bool closes()
   {
     close(fd);
+    fd=SERIAL_CLOSED;
     return true;
   }//closes
 

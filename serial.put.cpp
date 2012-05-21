@@ -21,12 +21,10 @@ int main(int argc, char *argv[])
 //serial object
   serialCOM serial;
 // OPEN 
-  serial.port=SerialPath;
-  if(!serial.opens())  return 1;
+  if(!serial.opens(SerialPath)) return 1;
 // WRITE 
-  serial.message=Message;
-  std::cerr << "write:" << serial.message <<std::endl;
-  if(!serial.writes()) return 1;
+  std::cerr << "write:" << Message <<std::endl;
+  if(!serial.writes(Message))   return 1;
 //CLOSE
   serial.closes();
   return 0;

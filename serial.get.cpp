@@ -21,11 +21,9 @@ int main(int argc, char *argv[])
 //serial object
   serialCOM serial;
 // OPEN 
-  serial.port=SerialPath;
-  if(!serial.opens())  return 1;
+  if(!serial.opens(SerialPath)) return 1;
 // WRITE 
-  serial.message=Message;
-  if(!serial.writes()) return 1;
+  if(!serial.writes(Message))   return 1;
 // READ
   std::string value;
   serial.reads(value);
