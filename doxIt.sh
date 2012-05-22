@@ -17,7 +17,9 @@ do
   $bin -h 2> $dir/$out; cat -v $dir/$out | sed 's/\^\[\[//g' | sed 's/1m//g' | sed 's/0;0;0m//g' | sed 's/0;35;59m//g' | sed 's/0;32;59m//g' | sed 's/4;31;59m//g' > $dir/$out.output;rm $dir/$out
 done
 #create documentation
-doxygen rs232.Doxygen
+cat rs232.Doxygen | sed 's/\ VERSION/\ '`cat VERSION`'/g' > rs232.Doxygen.version
+doxygen rs232.Doxygen.version
+rm rs232.Doxygen.version
 #put back code versions
 for d in $list
 do
