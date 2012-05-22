@@ -10,9 +10,12 @@ do
 done
 #get rs232 help output (xterm-color unformated)
 dir=../rs232
-bin=$dir/rs232
-out=rs232.help
-$bin -h 2> $dir/$out; cat -v $dir/$out | sed 's/\^\[\[//g' | sed 's/1m//g' | sed 's/0;0;0m//g' | sed 's/0;35;59m//g' | sed 's/0;32;59m//g' | sed 's/4;31;59m//g' > $dir/$out.output;rm $dir/$out
+for fb in get put
+do
+  bin=$dir/$fb
+  out=serial_$fb.help
+  $bin -h 2> $dir/$out; cat -v $dir/$out | sed 's/\^\[\[//g' | sed 's/1m//g' | sed 's/0;0;0m//g' | sed 's/0;35;59m//g' | sed 's/0;32;59m//g' | sed 's/4;31;59m//g' > $dir/$out.output;rm $dir/$out
+done
 #create documentation
 doxygen rs232.Doxygen
 #put back code versions

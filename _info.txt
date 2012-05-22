@@ -1,0 +1,17 @@
+#compile
+clear; make clean; make; ./get -h; ./put -h
+
+#documentation
+firefox doc/html/index.html &
+
+#edit
+gedit Makefile serialCOM.h serial.put.cpp serial.get.cpp &
+
+#version
+git commit -a
+
+#run
+##run IFA300
+./get --message "*IDN?"
+./put --message "CONF:GAIN 5"
+./get --message "READ:GAIN?"

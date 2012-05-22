@@ -1,4 +1,13 @@
 //serial get
+/*-----------------------------------------------------------------------
+  File        : serial_get.cpp
+  Description : Particle Image Velocimetry program of the Laboratory of Mechanics in Lille (LML)
+  Authors     : Caroline BRAUD, Sebastien COUDERT
+-----------------------------------------------------------------------*/
+
+//main doxygen page is in serial.put.cpp
+
+//! \todo serial_get doxygen user page
 
 //standard library
 #include <iostream>
@@ -10,6 +19,7 @@
 int main(int argc, char *argv[])
 { 
 //commmand line options
+//! \todo add usage
   const int         verbose    = (cimg_option("-v",(const char*)NULL,"verbose option")!=NULL);
   const bool        show_info  = (cimg_option("--info",(const char*)NULL,"information")!=NULL);
   const bool        show_help  = (cimg_option("-h",(const char*)NULL,"information")!=NULL);
