@@ -2,3 +2,23 @@ rs232
 
 RS232 is serial communication protocol.
 This code is intended to handle serial communication within C++ class.
+
+additional library needed:
+* CImg for comand line option, only.
+  Please, install CImg parent folder as CImg
+
+install example
+  cd code
+  #RS232
+  git clone git://github.com/coupdair/rs232.git
+  cd rs232; ls
+  cd ..
+  #CImg
+  wget http://downloads.sourceforge.net/project/cimg/CImg-1.4.9.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fcimg%2Ffiles%2F&ts=1337853554&use_mirror=switch
+  unzip CImg-1.4.9.zip
+  ln -s CImg-1.4.9 CImg
+  ls CImg
+  #RS232
+  cd rs232
+  make
+
