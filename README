@@ -1,0 +1,4 @@
+rs232
+
+RS232 is serial communication protocol.
+This code is intended to handle serial communication within C++ class.
