@@ -1,5 +1,5 @@
-#ifndef SERIAL_COMMUNICATION_EXEC
-#define SERIAL_COMMUNICATION_EXEC
+#ifndef SERIAL_COMMUNICATION
+#define SERIAL_COMMUNICATION
 
 #include <iostream>
 #include <string>
@@ -23,7 +23,7 @@ public:
   Cserial()
   {
 #if cimg_debug>1
-    class_name="serial (virtual)";
+    class_name="Cserial_virtual";
 #endif
   }//constructor
 
@@ -84,7 +84,7 @@ public:
   Cserial_system()
   {
 #if cimg_debug>1
-    class_name="serial_system";
+    class_name="Cserial_system";
 #endif
   }//constructor
 
