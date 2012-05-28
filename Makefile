@@ -13,7 +13,7 @@ prog:$(PROGRAMS)
 get: serial.get.cpp serialCOM.h
 	$(CPP) $(OPT) serial.get.cpp -o $@
 
-put: serial.put.cpp serialCOM.h
+put: serial.put.cpp serialCOM.h serial.h
 	$(CPP) $(OPT) serial.put.cpp -o $@
 
 ping: serial.ping.cpp serialCOM.h

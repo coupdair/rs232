@@ -2,6 +2,7 @@
 #define SERIAL_COMMUNICATION_EXEC
 
 #include <iostream>
+#include <string>
 
 class serial
 {
@@ -22,7 +23,7 @@ public:
   serial()
   {
 #if cimg_debug>1
-    class_name="serial";
+    class_name="serial_system";
 #endif
   }//constructor
 
@@ -36,17 +37,18 @@ public:
   bool opens()
   {
 #if cimg_debug>1
-std::cerr<<class_name<<"::"<<__func__<<": use system command execution (i.e. exec() )\n"<<std::flush;
+std::cerr<<class_name<<"::"<<__func__<<": use system command execution (i.e. std::system() )\n"<<std::flush;
 #endif
     ///check \c port_name validity
     if(port_path.empty()) return false;
     ///check port validity
-//    exec("ls /dev/");
-//    if(fd == SERIAL_OPEN_ERROR)
+    int error=std::system(std::string("ls "+port_path).c_str());
+    if(error!=0)
     {
-      std::cerr<<"open_port: Unable to list "<<port_path<<" port.\n";//e.g. /dev/ttyUSB0
+      std::cerr<<"error: Unable to list "<<port_path<<" port (i.e. std::system error code="<<error<<").\n";//e.g. /dev/ttyUSB0
       return false;
     }
+    ///print availability
     std::cerr<<"port is available"<<std::endl;
     return true;
   }//opens
@@ -74,14 +76,19 @@ std::cerr<<class_name<<"::"<<__func__<<": use system command execution (i.e. exe
   bool writes(std::string value,const int number_of_try=3,const int try_wait_time=10)
   {
 #if cimg_debug>1
-std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<","<<number_of_try<<" tries,"<<try_wait_time<<" ms)\n"<<std::flush;
+//std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<","<<number_of_try<<" tries,"<<try_wait_time<<" ms)\n"<<std::flush;
+std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<", no try nor wait time implemented, yet! )\n"<<std::flush;
 #endif
     last_message_written=value;
     value.append("\r\n");
-//    exec();
-#if cimg_debug>1
-std::cerr<<class_name<<"::"<<__func__<<" empty.\n"<<std::flush;
-#endif
+    ///send message to port
+    int error=std::system(std::string("echo "+value+" > "+port_path).c_str());
+    if(error!=0)
+    {
+      std::cerr<<"error: message send fail (i.e. std::system error code="<<error<<"); message=\""<<value<<"\".\n";//e.g. /dev/ttyUSB0
+      return false;
+    }
+    ///print ok
     std::cerr << "write OK\n" << std::flush;
     return true;
   }//writes
