@@ -112,7 +112,7 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
 //  serialCOM serial;
-  serial serial;
+  Cserial_system serial;
 // OPEN 
   if(!serial.opens(SerialPath)) return 1;
 // WRITE 

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-class serial
+class Cserial
 {
 public:
   //! class name for debug only
@@ -20,7 +20,68 @@ public:
   /**
    *
   **/
-  serial()
+  Cserial()
+  {
+#if cimg_debug>1
+    class_name="serial (virtual)";
+#endif
+  }//constructor
+
+  //! Open serial port from \c port_path
+  /** 
+   *
+   * @return true on success (false otherwize)
+   */
+  virtual bool opens()=0;
+
+  //! Open serial port from new value of \c port_path
+  /** 
+   *
+   * @param[in] port_path_name: path
+   *
+   * @return 
+   */
+  bool opens(const std::string& port_path_name)
+  {
+    port_path=port_path_name;
+    return opens();
+  }//opens
+  
+  //! write on serial port
+  /** 
+   *
+   * @param[in] message= string to send to serial port  
+   *
+   * @return 
+   */
+  virtual bool writes(std::string value,const int number_of_try=3,const int try_wait_time=10)=0;
+
+  //! read on serial port
+  /** 
+   *
+   * @param[out] value= value returned by serial port
+   *
+   * @return 
+   */
+  virtual bool reads(std::string& value)=0;
+
+  //! Close serial port
+  /** 
+   *
+   * @return 
+   */
+  virtual bool closes()=0;
+
+};//Cserial class
+
+class Cserial_system: public Cserial
+{
+public:
+  //! constructor
+  /**
+   *
+  **/
+  Cserial_system()
   {
 #if cimg_debug>1
     class_name="serial_system";
@@ -53,19 +114,18 @@ std::cerr<<class_name<<"::"<<__func__<<": use system command execution (i.e. std
     return true;
   }//opens
 
-  //! Open serial port
+  //! Open serial port from new value of \c port_path
   /** 
    *
-   * @param[in] port 
+   * @param[in] port_path_name: path
    *
    * @return 
    */
   bool opens(const std::string& port_path_name)
   {
-    port_path=port_path_name;
-    return opens();
+    return Cserial::opens(port_path_name);
   }//opens
-  
+
   //! write on serial port
   /** 
    *
@@ -126,7 +186,7 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<", no try nor wait ti
     return true;
   }//closes
 
-};//serialCOM class
+};//Cserial_system class
 
 #endif //SERIAL_COMMUNICATION
 
