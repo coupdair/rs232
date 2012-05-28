@@ -87,6 +87,7 @@
 #include "../CImg/CImg.h"
 //RS232 library
 #include "serialCOM.h"
+#include "serial.h"
 
 int main(int argc, char *argv[])
 { 
@@ -110,7 +111,8 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   ///stop if help requested
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
-  serialCOM serial;
+//  serialCOM serial;
+  serial serial;
 // OPEN 
   if(!serial.opens(SerialPath)) return 1;
 // WRITE 

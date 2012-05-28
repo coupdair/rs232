@@ -1,17 +1,20 @@
 #compile
-clear; make clean; make; ./get -h; ./put -h
+clear; make clean; make && ./get -h && ./put -h && ./ping -h -I
 
 #documentation
 firefox doc/html/index.html &
 
 #edit
-gedit Makefile serialCOM.h serial.put.cpp serial.get.cpp &
+gedit Makefile serialCOM.h serial.put.cpp serial.get.cpp serial.ping.cpp &
 
 #version
 git commit -a
 
 #run
+##run pingpong
+./ping --path /dev/ttyUSB1 --pong & ./ping --path /dev/ttyUSB0
 ##run IFA300
 ./get --message "*IDN?"
 ./put --message "CONF:GAIN 5"
 ./get --message "READ:GAIN?"
+

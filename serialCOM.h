@@ -14,6 +14,12 @@
 
 class serialCOM
 {
+public:
+  //! class name for debug only
+#if cimg_debug>1
+  std::string class_name;
+#endif
+private:
   //!File descriptor for the port
   int fd;
 public:
@@ -29,6 +35,12 @@ public:
 //! \todo [medium] _ error handling: init fd to SERIAL_CLOSED (i.e. constructor), return code error in all functions but opens() (i.e. if(fd!=SERIAL_CLOSED) closes(); ).
 //! \todo [next]   _ call closes in destructor (e.g. add also if(fd!=SERIAL_CLOSED) in closes).
 //! \todo [low] move opens, writes, reads and closes to .cpp (i.e. need Makefile changes)
+  serialCOM()
+  {
+#if cimg_debug>1
+    class_name="serialCOM";
+#endif
+  }//constructor
 
   //! Open serial port
   /** 
@@ -70,22 +82,26 @@ public:
    *
    * @return 
    */
-  bool writes(std::string value)
+  bool writes(std::string value,const int number_of_try=3,const int try_wait_time=10)
   {
+#if cimg_debug>1
+std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<","<<number_of_try<<" tries,"<<try_wait_time<<" ms)\n"<<std::flush;
+#endif
     message=value;
-    value.append("\r");
+    value.append("\r\n");
     int  tries=0;        /* Number of tries so far */
     while(write(fd,(const char*)value.c_str(),value.size()) <value.size())
       {
 	tries++;
-	if (tries > 3)
+	if (tries > number_of_try)
 	  {
-	    std::cerr << "write KO :(" << std::endl;
+	    std::cerr<<"error: write KO :( (with "<<--tries<<" tries)\n"<<std::flush;
 	    return false;
 	  }
-	std::cerr << "rs232 not ready, retry" << std::endl;
+	std::cerr<<"warning: rs232 not ready, retry\n"<<std::flush;
+        cimg_library::cimg::wait(try_wait_time);
       }//try loop
-    std::cerr << "write OK" << std::endl;
+    std::cerr << "write OK\n" << std::flush;
     return true;
   }//writes
 
@@ -98,26 +114,34 @@ public:
    */
   bool reads(std::string& value)
   {
+#if cimg_debug>1
+    std::cerr<<class_name<<"::"<<__func__<<"(get \""<<value<<"\")\n"<<std::flush;
+#endif
     char buffer[255];  /* Input buffer */
     char *bufptr;      /* Current char in buffer */
     int  nbytes;       /* Number of bytes read */
     //std::string value;
-
+//std::cerr<<__func__<<"/sizeof(buffer)="<<sizeof(buffer)<<"\n"<<std::flush;
+    //initialisation
+//    std::memset(buffer,0,255);
+    //read loop
     bufptr = buffer;
     while ((nbytes = read(fd, bufptr, buffer + sizeof(buffer) - bufptr - 1)) > 0)
       {
 	std::cerr << "reading buffer" << std::endl;
-	//std::cout<<"nbytes="<<nbytes<<"\n";
+//std::cerr<<"nbytes="<<nbytes<<"\n"<<std::flush;
 	bufptr += nbytes;
 	if (bufptr[-1] == '\n' || bufptr[-1] == '\r')
 	  break;
       }
-    std::cerr << "read OK" << std::endl;
+    std::cerr << "read OK\n" << std::flush;
     buffer[bufptr-buffer-1]='\0';
-//! \bug please do not close fd here !, \see closes
-    //std::cout << buffer << endl;
+//std::cerr<<__func__<<"/lenght(buffer)="<<strlen(buffer)<<"\n"<<std::flush;
     value=buffer;
     message=value;//for information
+#if cimg_debug>1
+std::cerr<<class_name<<"::"<<__func__<<"(set \""<<value<<"\")\n"<<std::flush;
+#endif
     return true;
   }//reads
 
