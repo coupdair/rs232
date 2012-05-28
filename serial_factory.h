@@ -47,7 +47,26 @@ std::cerr<<class_name<<"::"<<__func__<<"("<<type<<")\n"<<std::flush;
       }
     }
   }//create
-//  Cserial* create(std::string type_name)
+  //! create a serial port of a specific \c type
+  /** 
+   *
+   * @param[in] type: type of port (e.g. type=="serial_system" <=> \c Cserial_system type)
+   *
+   * @return 
+   */
+  Cserial* create(std::string type_name)
+  {
+#if cimg_debug>1
+std::cerr<<class_name<<"::"<<__func__<<"("<<type_name<<")\n"<<std::flush;
+#endif
+    if(type_name=="serial_system") return create(1);
+    else if(type_name=="serial_termios") return create(2);
+    else
+    {
+      std::cerr<<class_name<<"::"<<__func__<<": error: serail type="<<type_name<<" not handled.\n"<<std::flush;
+      return NULL;
+    }
+  }//create
 //  Cserial* create(CNetCDFParameter &fp)
 
 };//Cserial_factory class

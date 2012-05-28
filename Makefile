@@ -1,7 +1,7 @@
 PROGRAMS = get put ping pingpong
 DOCUMENTATIONS = doc
 
-version = v0.2.2
+version = v0.2.3
 OPT = -Dcimg_display=0 -Dcimg_debug=2 -Dcimg_use_vt100 -DVERSION=\"$(version)\"
 CC = gcc
 CPP = g++

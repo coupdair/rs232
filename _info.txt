@@ -1,11 +1,11 @@
 #compile
-clear; make clean; make && ./get -h && ./put -h && ./ping -h -I
+clear; make clean; make && ./get -h && ./put -h && ./ping -h -I && ./pingpong -h -I
 
 #documentation
 firefox doc/html/index.html &
 
 #edit
-gedit Makefile serialCOM.h serial.put.cpp serial.get.cpp serial.ping.cpp &
+gedit Makefile serial.h serialCOM.h serial_factory.h serial.put.cpp serial.get.cpp serial.ping.cpp serial.pingpong.cpp &
 
 #version
 git commit -a
@@ -13,11 +13,12 @@ git commit -a
 #run
 ##run pingpong
 ./ping --path /dev/ttyUSB1 --pong & ./ping --path /dev/ttyUSB0
+./pingpong --number 16 --wait-time 0 --path-ping /dev/ttyUSB0 --path-pong /dev/ttyUSB1
 ##run IFA300
 ./get --message "*IDN?"
 ./put --message "CONF:GAIN 5"
 ./get --message "READ:GAIN?"
 
 ##run linux system
-./put --message "-message to StandardOutPut-" --path /dev/stdout | grep StandardOutPut --color
+make put && ./put --message "-message to StandardOutPut-" --path /dev/stdout --type serial_system | grep StandardOutPut --color 
 

@@ -105,15 +105,14 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   ///serial related variable
-  const std::string SerialPath =  cimg_option("--path","/dev/ttyUSB0","Path serial device");
+  const std::string SerialType =  cimg_option("--type","serial_termios","Type of serial device (i.e. serial_termios or serial_system)");
+  const std::string SerialPath =  cimg_option("--path","/dev/ttyUSB0","Path of serial device");
   const std::string Message =  cimg_option("--message","CONF:GAIN 1","Message to write to serial port (the example set the IFA300 gain to 1");
   ///stop if help requested
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
-//  Cserial_termios serial;serial.opens(...
-//  Cserial_system serial;
   Cserial_factory serial_factory;
-  Cserial *pSerial=serial_factory.create(1);
+  Cserial *pSerial=serial_factory.create(SerialType);
 // OPEN 
   if(!pSerial->opens(SerialPath)) return 1;
 // WRITE 
