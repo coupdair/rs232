@@ -2,16 +2,21 @@
 #define SERIAL_COMMUNICATION_FACTORY
 
 #include "serial.h"
+#include "serialCOM.h"
 
 class Cserial_factory
 {
 public:
+  //! class name for debug only
+#if cimg_debug>1
+  std::string class_name;
+#endif
 
   //! constructor
   /**
    *
   **/
-  Cserial()
+  Cserial_factory()
   {
 #if cimg_debug>1
     class_name="serial_factory";

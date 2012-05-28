@@ -86,8 +86,7 @@
 //CImg Library
 #include "../CImg/CImg.h"
 //RS232 library
-#include "serialCOM.h"
-#include "serial.h"
+#include "serial_factory.h"
 
 int main(int argc, char *argv[])
 { 
@@ -111,15 +110,17 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   ///stop if help requested
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
-//  serialCOM serial;
-  Cserial_system serial;
+//  Cserial_termios serial;serial.opens(...
+//  Cserial_system serial;
+  Cserial_factory serial_factory;
+  Cserial *pSerial=serial_factory.create(1);
 // OPEN 
-  if(!serial.opens(SerialPath)) return 1;
+  if(!pSerial->opens(SerialPath)) return 1;
 // WRITE 
   std::cerr << "write:" << Message <<std::endl;
-  if(!serial.writes(Message))   return 1;
+  if(!pSerial->writes(Message))   return 1;
 //CLOSE
-  serial.closes();
+  pSerial->closes();
   return 0;
 }//main
 
