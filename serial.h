@@ -11,6 +11,8 @@ public:
 #if cimg_debug>1
   std::string class_name;
 #endif
+  //! class (or library) version for information only
+  std::string class_version;
   //! port path name (e.g. "/dev/ttyUSB0")
   std::string port_path;
   std::string last_message_written;
@@ -25,6 +27,7 @@ public:
 #if cimg_debug>1
     class_name="Cserial_virtual";
 #endif
+    class_version=VERSION;
   }//constructor
 
   //! Open serial port from \c port_path

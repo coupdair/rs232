@@ -1,0 +1,14 @@
+
+ put : serial_put a RS232 program of the Laboratory of Mechanics in Lille (LML), it is intended to send a message through the serial cable to a RS232 device, it uses different GNU libraries (see --info option)
+
+ usage: ./get --message "*IDN?"
+        ./put --message "CONF:GAIN 5"
+        ./get --message "READ:GAIN?"
+ version: v0.2.3
+ compilation date:  (May 29 2012, 11:06:57)
+
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --type           serial_termios           Type of serial device (i.e. serial_termios or serial_system)
+    --path           /dev/ttyUSB0             Path of serial device
+    --message        CONF:GAIN 1              Message to write to serial port (the example set the IFA300 gain to 1
