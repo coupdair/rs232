@@ -14,7 +14,7 @@
 //CImg Library
 #include "../CImg/CImg.h"
 //RS232 library
-#include "serialCOM.h"
+#include "serial_factory.h"
 
 int main(int argc, char *argv[])
 { 
@@ -32,6 +32,7 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   ///serial related variable
+  const std::string SerialType =  cimg_option("--type","serial_termios","Type of serial device (i.e. serial_termios or serial_system)");
   const std::string SerialPath =  cimg_option("--path","/dev/ttyUSB0","Path serial device");
   const bool pong=cimg_option("--pong",false,"pong program (default ping).");
   std::string Message=(pong)?"pong":"ping";
@@ -40,12 +41,13 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   ///stop if help requested
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
-  serialCOM serial;
+  Cserial_factory serial_factory;
+  Cserial *pSerial=serial_factory.create(SerialType);
 #if cimg_debug>1
-  serial.class_name+=(pong)?"_in_pong":"_in_ping";
+  pSerial->class_name+=(pong)?"_in_pong":"_in_ping";
 #endif
 // OPEN 
-  if(!serial.opens(SerialPath)) return 1;
+  if(!pSerial->opens(SerialPath)) return 1;
 /*
 // FLUSH
   {
@@ -53,23 +55,23 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   std::cerr<<"flush serial read buffer.\n"<<std::flush;
 #endif
   std::string value;
-  serial.reads(value);
+  pSerial->reads(value);
   }
 */
 ///ping-pong loop
   for(int i=0;i<number;++i)
   {
 // WRITE 
-    if( (i>0)||(!pong) ) if(!serial.writes(Message+(char)('0'+i),10,100)) return 1;
+    if( (i>0)||(!pong) ) if(!pSerial->writes(Message+(char)('0'+i),10,100)) return 1;
 //    cimg_library::cimg::wait(wait_time*i);
 // READ
     std::string value;
-    serial.reads(value);
+    pSerial->reads(value);
     std::cout<<std::string((pong)?"pong":"ping")<<": read=\""<<value<<"\" @ i="<<(char)('0'+i)<<"\n"<<std::flush;
 //    cimg_library::cimg::wait(wait_time*i*2);
   }
 //CLOSE
-  serial.closes();
+  pSerial->closes();
   return 0;
 }//main
 

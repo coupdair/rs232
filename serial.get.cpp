@@ -14,7 +14,7 @@
 //CImg Library
 #include "../CImg/CImg.h"
 //RS232 library
-#include "serialCOM.h"
+#include "serial_factory.h"
 
 int main(int argc, char *argv[])
 { 
@@ -33,22 +33,24 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   ///serial related variable
+  const std::string SerialType =  cimg_option("--type","serial_termios","Type of serial device (i.e. serial_termios or serial_system)");
   const std::string SerialPath =  cimg_option("--path","/dev/ttyUSB0","Path serial device");
   const std::string Message =  cimg_option("--message","*IDN?","Message to send to the serial port (the example ask if IFA300 ready)");
   ///stop if help requested
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
-  serialCOM serial;
+  Cserial_factory serial_factory;
+  Cserial *pSerial=serial_factory.create(SerialType);
 // OPEN 
-  if(!serial.opens(SerialPath)) return 1;
+  if(!pSerial->opens(SerialPath)) return 1;
 // WRITE 
-  if(!serial.writes(Message))   return 1;
+  if(!pSerial->writes(Message))   return 1;
 // READ
   std::string value;
-  serial.reads(value);
+  pSerial->reads(value);
   std::cout << value << std::endl;
 //CLOSE
-  serial.closes();
+  pSerial->closes();
   return 0;
 }//main
 

@@ -19,7 +19,7 @@ public:
   Cserial_factory()
   {
 #if cimg_debug>1
-    class_name="serial_factory";
+    class_name="Cserial_factory";
 #endif
   }//constructor
 
