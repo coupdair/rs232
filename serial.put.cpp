@@ -117,7 +117,7 @@ version: "+std::string(VERSION)+"\n compilation date: " \
   if(!pSerial->opens(SerialPath)) return 1;
 // WRITE 
   std::cerr << "write:" << Message <<std::endl;
-  if(!pSerial->writes(Message))   return 1;
+  if(!pSerial->writes(Message,0,20))   return 1;
 //CLOSE
   pSerial->closes();
   return 0;

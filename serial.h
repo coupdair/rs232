@@ -44,7 +44,7 @@ public:
    *
    * @return 
    */
-  bool opens(const std::string& port_path_name)
+  virtual bool opens(const std::string& port_path_name)
   {
     port_path=port_path_name;
     return opens();
@@ -57,7 +57,7 @@ public:
    *
    * @return 
    */
-  virtual bool writes(std::string value,const int number_of_try=3,const int try_wait_time=10)=0;
+  virtual bool writes(std::string value,const int number_of_try=3,const int try_wait_time=20)=0;
 
   //! read on serial port
   /** 
@@ -136,20 +136,30 @@ std::cerr<<class_name<<"::"<<__func__<<": use system command execution (i.e. std
    *
    * @return 
    */
-  bool writes(std::string value,const int number_of_try=3,const int try_wait_time=10)
+  bool writes(std::string value,const int number_of_try=3,const int try_wait_time=20)
   {
 #if cimg_debug>1
-//std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<","<<number_of_try<<" tries,"<<try_wait_time<<" ms)\n"<<std::flush;
-std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<", no try nor wait time implemented, yet! )\n"<<std::flush;
+//std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\","<<number_of_try<<" tries,"<<try_wait_time<<" ms)\n"<<std::flush;
+//std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try nor wait time implemented, yet! )\n"<<std::flush;
+std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time="<<try_wait_time<<")\n"<<std::flush;
 #endif
     last_message_written=value;
-    value.append("\r\n");
+//    value.append("\r\n");
     ///send message to port
-    int error=std::system(std::string("echo "+value+" > "+port_path).c_str());
-    if(error!=0)
+    char character[2];character[1]='\0';
+    std::string message_echo;message_echo.reserve(255);
+    for(int i=0;i<value.size();++i)
     {
-      std::cerr<<"error: message send fail (i.e. std::system error code="<<error<<"); message=\""<<value<<"\".\n";//e.g. /dev/ttyUSB0
-      return false;
+      character[0]=value[i];
+      message_echo="/bin/echo -e -n '"+std::string(character)+"' > "+port_path;
+      int error=std::system(message_echo.c_str());
+      if(error!=0)
+      {
+        std::cerr<<"error: message send fail (i.e. std::system error code="<<error<<"); message=\""<<value<<"\" @["<<i<<"]="<<value[i]<<".\n";//e.g. /dev/ttyUSB0
+        return false;
+      }
+//std::cerr<<message_echo<<"\n"<<std::flush;
+      cimg_library::cimg::wait(try_wait_time/*wait_time*/);
     }
     ///print ok
     std::cerr << "write OK\n" << std::flush;
