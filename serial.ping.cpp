@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 it uses different GNU libraries (see --info option)\n\n \
 usage: ./ping --path /dev/ttyUSB0\n \
        ./ping --path /dev/ttyUSB1 --pong\n \
-version: "+std::string(VERSION)+"\n compilation date: " \
+version: "+std::string(RS232_VERSION)+"\n compilation date: " \
             ).c_str());//cimg_usage
   ///information and help
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option

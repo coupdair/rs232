@@ -25,7 +25,7 @@ it uses different GNU libraries (see --info option)\n\n \
 usage: ./get --message \"*IDN?\"\n \
        ./put --message \"CONF:GAIN 5\"\n \
        ./get --message \"READ:GAIN?\"\n \
-version: "+std::string(VERSION)+"\n compilation date: " \
+version: "+std::string(RS232_VERSION)+"\n compilation date: " \
             ).c_str());//cimg_usage
   ///information and help
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option

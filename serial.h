@@ -27,7 +27,7 @@ public:
 #if cimg_debug>1
     class_name="Cserial_virtual";
 #endif
-    class_version=VERSION;
+    class_version=RS232_VERSION;
   }//constructor
 
   //! Open serial port from \c port_path

@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   cimg_usage(std::string("serial_put a RS232 program of the Laboratory of Mechanics in Lille (LML), it is intended to receive a message through the serial cable from a RS232 device, \
 it uses different GNU libraries (see --info option)\n\n \
 usage: ./pingpong --path-ping /dev/ttyUSB0 --path-pong /dev/ttyUSB1\n \
-version: "+std::string(VERSION)+"\n compilation date: " \
+version: "+std::string(RS232_VERSION)+"\n compilation date: " \
             ).c_str());//cimg_usage
   ///information and help
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option
