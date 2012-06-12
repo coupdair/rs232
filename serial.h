@@ -176,7 +176,7 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time=
   bool reads(std::string& value)
   {
 #if cimg_debug>1
-    std::cerr<<class_name<<"::"<<__func__<<" empty.\n"<<std::flush;
+    std::cerr<<class_name<<"::"<<__func__<<" empty function.\n"<<std::flush;
 #endif
 /*
 #if cimg_debug>1
@@ -194,7 +194,7 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time=
   bool closes()
   {
 #if cimg_debug>1
-    std::cerr<<class_name<<"::"<<__func__<<" empty.\n"<<std::flush;
+    std::cerr<<class_name<<"::"<<__func__<<" empty function.\n"<<std::flush;
 #endif
     return true;
   }//closes
