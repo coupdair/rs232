@@ -205,9 +205,8 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time=
    *
    * @return 
    */
-  bool gets(std::string ask,std::string value,int number_of_try=3,const int try_wait_time=20)
+  bool gets(std::string ask,std::string value,const int number_of_try=3,const int try_wait_time=20)
   {
-    if(number_of_try>9) number_of_try=9;
     #if cimg_debug>1
     std::cerr<<class_name<<"::"<<__func__<<"(\""<<ask<<"\", value, number_of_try="<<number_of_try<<", wait_time="<<try_wait_time<<")\n"<<std::flush;
     #endif
@@ -216,9 +215,11 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time=
     std::string command;
     command="get=";
     command+=ask;
-    command+="; for((i=1;i<";
-    command+=(char)(number_of_try+'0');//! \bug number_of_try<10
-    command+=";i++)); do rm respond.serial; echo '#!/bin/bash' > read.sh; echo 'exec 3<>/dev/ttyUSB0; /bin/echo -n -e \"'$get'\" >&3; read hop <&3 ; echo $hop > respond.serial' >> ./read.sh; chmod u+x read.sh ; ./read.sh & pid=$! ; sleep 1; kill $pid; n=`cat respond.serial | wc -c`; if ((n>1)) ; then break; fi; done; cat respond.serial; echo 'respond in '$i' tries.'";
+//    command+="; for((i=1;i<";//bash
+//    command+=(char)(number_of_try+'0');//! \bug number_of_try<10
+//    command+=";i++)); ";
+    command+="; for i in 1 2 3 4; ";//sh //! \bug number_of_try==4 (hard coded here)
+    command+="do rm respond.serial; echo '#!/bin/bash' > read.sh; echo 'exec 3<>/dev/ttyUSB0; /bin/echo -n -e \"'$get'\" >&3; read hop <&3 ; echo $hop > respond.serial' >> ./read.sh; chmod u+x read.sh ; ./read.sh & pid=$! ; sleep 1; kill $pid; n=`cat respond.serial | wc -c`; if [ $n -gt 1 ] ; then break; fi; done; cat respond.serial; echo 'respond in '$i' tries.'";
 std::cerr<<"command="<<command<<"\n"<<std::flush;
     //send write/read commands with tries and sleep time
     int error=std::system(command.c_str());
