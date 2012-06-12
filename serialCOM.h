@@ -133,6 +133,25 @@ std::cerr<<class_name<<"::"<<__func__<<"(set \""<<value<<"\")\n"<<std::flush;
     return true;
   }//reads
 
+  //! get a value from device on serial port (i.e. write then read; e.g. ask for a value)
+  /** 
+   *
+   * @param[in]  ask=ask for a variable value (writes: string to send to serial port) 
+   * @param[out] value=returned value (reads: value returned by serial port)
+   *
+   * @return 
+   */
+  bool gets(std::string ask,std::string value,const int number_of_try=3,const int try_wait_time=20)
+  {
+    #if cimg_debug>1
+//    std::cerr<<class_name<<"::"<<__func__<<"(\""<<ask<<"\", value, number_of_try="<<number_of_try<<", wait_time="<<try_wait_time<<")\n"<<std::flush;
+    #endif
+#if cimg_debug>1
+    std::cerr<<class_name<<"::"<<__func__<<" empty function (but should be easy to implement as it is writes then reads).\n"<<std::flush;
+#endif
+    return true;
+  }//gets
+
   //! Close serial port
   /** 
    *

@@ -36,6 +36,7 @@ version: "+std::string(RS232_VERSION)+"\n compilation date: " \
   const std::string SerialType =  cimg_option("--type","serial_termios","Type of serial device (i.e. serial_termios or serial_system)");
   const std::string SerialPath =  cimg_option("--path","/dev/ttyUSB0","Path serial device");
   const std::string Message =  cimg_option("--message","*IDN?","Message to send to the serial port (the example ask if IFA300 ready)");
+  const bool gets=cimg_option("--gets",false,"use gets function instead of write then read functions (e.g. --gets true)");
   ///stop if help requested
   if(show_help) {/*print_help(std::cerr);*/return 0;}
 //serial object
@@ -43,11 +44,21 @@ version: "+std::string(RS232_VERSION)+"\n compilation date: " \
   Cserial *pSerial=serial_factory.create(SerialType);
 // OPEN 
   if(!pSerial->opens(SerialPath)) return 1;
-// WRITE 
-  if(!pSerial->writes(Message))   return 1;
-// READ
   std::string value;
-  pSerial->reads(value);
+  if(gets)
+  {
+///get using gets function
+// GETS 
+    if(!pSerial->gets(Message,value))   return 1;
+  }
+  else
+  {
+///get using writes then reads functions
+// WRITE 
+    if(!pSerial->writes(Message))   return 1;
+// READ
+    pSerial->reads(value);
+  }
   std::cout << value << std::endl;
 //CLOSE
   pSerial->closes();
