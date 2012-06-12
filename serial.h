@@ -220,7 +220,7 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time=
 //    command+=";i++)); ";
     command+="; for i in 1 2 3 4; ";//sh //! \bug number_of_try==4 (hard coded here)
     command+="do rm respond.serial; echo '#!/bin/bash' > read.sh; echo 'exec 3<>/dev/ttyUSB0; /bin/echo -n -e \"'$get'\" >&3; read hop <&3 ; echo $hop > respond.serial' >> ./read.sh; chmod u+x read.sh ; ./read.sh & pid=$! ; sleep 1; kill $pid; n=`cat respond.serial | wc -c`; if [ $n -gt 1 ] ; then break; fi; done; cat respond.serial; echo 'respond in '$i' tries.'";
-std::cerr<<"command="<<command<<"\n"<<std::flush;
+//std::cerr<<"command=\""<<command<<"\"\n"<<std::flush;
     //send write/read commands with tries and sleep time
     int error=std::system(command.c_str());
     if(error!=0)
@@ -234,9 +234,13 @@ std::cerr<<"command="<<command<<"\n"<<std::flush;
     if(!is.good()) return false;
     ///print ok
     std::cerr << "get OK\n" << std::flush;
-    is>>value;
-    is.close(); 
-std::cerr << "get value=\""<<value<<"\"\n" << std::flush;
+//    value="";value.reserve(64);
+//    is.getline((char*)value.c_str(),value.size());
+ //   std::string temp;
+ //   while(is.good()) {is>>temp; value+=temp+" ";}
+    getline(is,value); 
+    is.close();
+std::cerr << " get value=\""<<value<<"\"\n" << std::flush;
     std::system("rm respond.serial");
     return true;
   }
