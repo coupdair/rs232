@@ -144,11 +144,12 @@ std::cerr<<class_name<<"::"<<__func__<<"(set \""<<value<<"\")\n"<<std::flush;
   bool gets(std::string ask,std::string value,const int number_of_try=3,const int try_wait_time=20)
   {
     #if cimg_debug>1
-//    std::cerr<<class_name<<"::"<<__func__<<"(\""<<ask<<"\", value, number_of_try="<<number_of_try<<", wait_time="<<try_wait_time<<")\n"<<std::flush;
+    std::cerr<<class_name<<"::"<<__func__<<"(\""<<ask<<"\", value, number_of_try="<<number_of_try<<", wait_time="<<try_wait_time<<")\n"<<std::flush;
     #endif
-#if cimg_debug>1
-    std::cerr<<class_name<<"::"<<__func__<<" empty function (but should be easy to implement as it is writes then reads).\n"<<std::flush;
-#endif
+// WRITE 
+    if(!this->writes(ask,number_of_try,try_wait_time)) return false;
+// READ
+    if(!this->reads(value)) return false;
     return true;
   }//gets
 

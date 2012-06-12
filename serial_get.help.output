@@ -4,11 +4,12 @@
  usage: ./get --message "*IDN?"
         ./put --message "CONF:GAIN 5"
         ./get --message "READ:GAIN?"
- version: v0.3.0
- compilation date:  (Jun 12 2012, 17:57:29)
+ version: v0.3.1
+ compilation date:  (Jun 12 2012, 18:09:49)
 
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
     --type           serial_termios           Type of serial device (i.e. serial_termios or serial_system)
     --path           /dev/ttyUSB0             Path serial device
     --message        *IDN?                    Message to send to the serial port (the example ask if IFA300 ready)
+    --gets           false                    use gets function instead of write then read functions (e.g. --gets true)
