@@ -4,8 +4,8 @@
  usage: ./get --message "*IDN?"
         ./put --message "CONF:GAIN 5"
         ./get --message "READ:GAIN?"
- version: v0.3.1
- compilation date:  (Jun 12 2012, 18:15:08)
+ version: v0.3.3
+ compilation date:  (Jun 13 2012, 14:33:28)
 
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
