@@ -77,7 +77,7 @@ public:
    *
    * @return 
    */
-  virtual bool gets(std::string ask,std::string value,const int number_of_try=3,const int try_wait_time=20)=0;
+  virtual bool gets(std::string ask,std::string &value,const int number_of_try=3,const int try_wait_time=20)=0;
 
   //! Close serial port
   /** 
@@ -205,7 +205,7 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time=
    *
    * @return 
    */
-  bool gets(std::string ask,std::string value,const int number_of_try=3,const int try_wait_time=20)
+  bool gets(std::string ask,std::string &value,const int number_of_try=3,const int try_wait_time=20)
   {
     #if cimg_debug>1
     std::cerr<<class_name<<"::"<<__func__<<"(\""<<ask<<"\", value, number_of_try="<<number_of_try<<", wait_time="<<try_wait_time<<")\n"<<std::flush;
