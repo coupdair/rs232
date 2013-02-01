@@ -155,7 +155,7 @@ std::cerr<<class_name<<"::"<<__func__<<": use system command execution (i.e. std
 std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\", no try yet, wait_time="<<try_wait_time<<")\n"<<std::flush;
 #endif
     last_message_written=value;
-//    value.append("\r\n");
+    value.append("\r\n");
     ///send message to port
     char character[2];character[1]='\0';
     std::string message_echo;message_echo.reserve(255);
