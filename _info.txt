@@ -22,3 +22,16 @@ git commit -a
 ##run linux system
 make put && ./put --message "-message to StandardOutPut-" --path /dev/stdout --type serial_system | grep StandardOutPut --color 
 
+#run interactive
+./interactive /dev/ttyUSB0 
+Please start with ./interactive /dev/ttyS1 (for example)
+##GentecPE communication example:
+*VER
+SOLO Version 2.15.07
+*BAT
+The battery power is Low
+*HEA
+Error 4: Head is not available
+q
+exit program
+
