@@ -16,10 +16,9 @@
 
 class Cserial_termios: public Cserial
 {
-private:
+public:
   //!File descriptor for the port
   int fd;
-public:
 //! \todo [high] . \c last_message_written, \c last_message_readed (remove \c message).
 //! \todo [medium] _ error handling: init fd to SERIAL_CLOSED (i.e. constructor), return code error in all functions but opens() (i.e. if(fd!=SERIAL_CLOSED) closes(); ).
 //! \todo [next]   _ call closes in destructor (e.g. add also if(fd!=SERIAL_CLOSED) in closes).
@@ -47,6 +46,9 @@ public:
       return false;
     }
     fcntl(fd, F_SETFL, 0);
+#if cimg_debug>1
+    std::cerr <<class_name<<"::information: ";
+#endif
     std::cerr << "port is open"<<std::endl;
     return true;
   }//opens
@@ -122,6 +124,7 @@ std::cerr<<"nbytes="<<nbytes<<"\n"<<std::flush;
 	if (bufptr[-1] == '\n' )// || bufptr[-1] == '\r')
 	  break;
       }
+std::cerr <<"nbytes="<<nbytes<<"\n"<< std::flush;
 if (bufptr[-1] == '\n' ) std::cerr << "last is \\n\n" << std::flush;
 if (bufptr[-1] == '\r' ) {std::cerr << "last is \\r\n" << std::flush;read(fd,bufptr,1);std::cerr << "  clear last \\n\n" << std::flush;}
     std::cerr << "read OK\n" << std::flush;
@@ -169,5 +172,63 @@ std::cerr<<class_name<<"::"<<__func__<<"(set \""<<value<<"\")\n"<<std::flush;
 
 };//Cserial_termios class
 
+class Cserial_termios_8n1: public Cserial_termios
+{
+public:
+  Cserial_termios_8n1()
+  {
+#if cimg_debug>1
+    class_name="Cserial_termios_8n1";
+#endif
+  }//constructor
+
+  //! Open serial port
+  /** 
+   *
+   * @param[in] port 
+   *
+   * @return 
+   */
+  bool opens()
+  {
+    struct termios tio;
+    //set serial structure
+    memset(&tio,0,sizeof(tio));
+    tio.c_iflag=0;
+    tio.c_oflag=0;
+    tio.c_cflag=CS8|CREAD|CLOCAL;//cfg.: 8n1 (see termios.h for more information)
+    tio.c_lflag=0;
+    tio.c_cc[VMIN]=1;
+    tio.c_cc[VTIME]=5;
+    //open  serial device
+#if cimg_debug>1
+    std::cerr <<class_name<<"::information: ";
+#endif
+    fd=open((const char*)port_path.c_str(), O_RDWR | O_NONBLOCK);
+    ///check
+    if (fd == SERIAL_OPEN_ERROR)
+    {
+      std::cerr<<"open_port: Unable to open "<<port_path<<" port.\n";//e.g. /dev/ttyUSB0
+      return false;
+    }
+    //setup serial device
+    cfsetospeed(&tio,B115200);// 115200 baud
+    cfsetispeed(&tio,B115200);// 115200 baud
+    tcsetattr(fd,TCSANOW,&tio);
+    std::cerr << "port is open"<<std::endl;
+{//test: get version
+unsigned char c;
+//ask     version
+write(fd,"*VER\r\n",6);
+write(fd,"*BAT\r\n",6);
+//receive version
+std::cerr<<"read='"<<std::flush;
+while(read(fd,&c,1)>0) std::cerr<<c;
+std::cerr<<"'."<<std::endl;
+}
+    return true;
+  }//opens
+
+};//Cserial_termios_8n1 class
 #endif //SERIAL_COMMUNICATION_TERMIOSCserial_termios
 

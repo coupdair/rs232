@@ -40,6 +40,7 @@ std::cerr<<class_name<<"::"<<__func__<<"("<<type<<")\n"<<std::flush;
       //case 0: return new Cserial;  break;//virtual
       case 1: return new Cserial_system;  break;
       case 2: return new Cserial_termios; break;
+      case 3: return new Cserial_termios_8n1; break;
       default:
       {
         std::cerr<<class_name<<"::"<<__func__<<": error: serial type="<<type<<" is unknown\n"<<std::flush;
@@ -61,6 +62,7 @@ std::cerr<<class_name<<"::"<<__func__<<"("<<type_name<<")\n"<<std::flush;
 #endif
     if(type_name=="serial_system") return create(1);
     else if(type_name=="serial_termios") return create(2);
+    else if(type_name=="serial_termios_8n1") return create(3);
     else
     {
       std::cerr<<class_name<<"::"<<__func__<<": error: serail type="<<type_name<<" not handled.\n"<<std::flush;
