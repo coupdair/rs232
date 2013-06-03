@@ -52,11 +52,14 @@ int main(int argc,char** argv)
         tcsetattr(tty_fd,TCSANOW,&tio);
 
 //interactive loop
+int i=0;
         unsigned char c='D';
         while (c!='q')
         {
                 if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial port, print it out
                 if (read(STDIN_FILENO,&c,1)>0)  {write(tty_fd,&c,1);std::cout<<c<<std::flush;}// if new data is available on the console, send it to both the serial port and the standard output
+if (i==123)  {write(tty_fd,"*VER\r\n",5);}
+++i;
         }
  
         close(tty_fd);

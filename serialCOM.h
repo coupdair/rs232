@@ -191,6 +191,7 @@ public:
    */
   bool opens()
   {
+/*
     struct termios tio;
     //set serial structure
     memset(&tio,0,sizeof(tio));
@@ -219,13 +220,70 @@ public:
 {//test: get version
 unsigned char c;
 //ask     version
-write(fd,"*VER\r\n",6);
-write(fd,"*BAT\r\n",6);
+const char* message="*VER\r\n";
+std::cerr<<message<<std::endl;
+write(fd,message,5);
+write(fd,message,5);
 //receive version
 std::cerr<<"read='"<<std::flush;
 while(read(fd,&c,1)>0) std::cerr<<c;
 std::cerr<<"'."<<std::endl;
 }
+*/
+        struct termios tio;
+        struct termios stdio;
+        struct termios old_stdio;
+        int tty_fd;
+ 
+        printf("Interactive prompt with device:\n- use 'q' to quit,\n- type command then press 'enter' to send command.\n\n");
+        std::cout<<std::flush;
+
+        tcgetattr(STDOUT_FILENO,&old_stdio);
+ 
+        memset(&stdio,0,sizeof(stdio));
+        stdio.c_iflag=0;
+        stdio.c_oflag=0;
+        stdio.c_cflag=0;
+        stdio.c_lflag=0;
+        stdio.c_cc[VMIN]=1;
+        stdio.c_cc[VTIME]=0;
+
+//set stdout
+        tcsetattr(STDOUT_FILENO,TCSANOW,&stdio);
+        tcsetattr(STDOUT_FILENO,TCSAFLUSH,&stdio);
+//set stdin
+        fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);       // make the reads non-blocking
+ 
+        memset(&tio,0,sizeof(tio));
+        tio.c_iflag=0;
+        tio.c_oflag=0;
+        tio.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
+        tio.c_lflag=0;
+        tio.c_cc[VMIN]=1;
+        tio.c_cc[VTIME]=5;
+ 
+        tty_fd=open((const char*)port_path.c_str(), O_RDWR | O_NONBLOCK);      
+        cfsetospeed(&tio,B115200);            // 115200 baud
+        cfsetispeed(&tio,B115200);            // 115200 baud
+ 
+//set serial device
+        tcsetattr(tty_fd,TCSANOW,&tio);
+
+//interactive loop
+int i=0;
+        unsigned char c='D';
+        while (c!='q')
+        {
+                if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial port, print it out
+if (i==123||i==12345)  {write(tty_fd,"*VER\r\n",5);}
+++i;
+if(i==23456) c='q';
+        }
+ std::cout<<std::endl;
+
+        close(tty_fd);
+        tcsetattr(STDOUT_FILENO,TCSANOW,&old_stdio);
+ 
     return true;
   }//opens
 
