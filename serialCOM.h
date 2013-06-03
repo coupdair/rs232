@@ -235,9 +235,6 @@ std::cerr<<"'."<<std::endl;
         struct termios old_stdio;
         int tty_fd;
  
-        printf("Interactive prompt with device:\n- use 'q' to quit,\n- type command then press 'enter' to send command.\n\n");
-        std::cout<<std::flush;
-
         tcgetattr(STDOUT_FILENO,&old_stdio);
  
         memset(&stdio,0,sizeof(stdio));
@@ -269,19 +266,39 @@ std::cerr<<"'."<<std::endl;
 //set serial device
         tcsetattr(tty_fd,TCSANOW,&tio);
 
-//interactive loop
-int i=0;
+write(tty_fd,"*VER\r\n",6);
+cimg_library::cimg::wait(123);
+write(tty_fd,"*VER\r\n",6);
+cimg_library::cimg::wait(123);
         unsigned char c='D';
-        while (c!='q')
+for(int i=0;i<2;++i)
+{
+        while (c!='\r')
         {
-                if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial port, print it out
-if (i==123||i==12345)  {write(tty_fd,"*VER\r\n",5);}
-++i;
-if(i==23456) c='q';
+                if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial 
         }
- std::cout<<std::endl;
+std::cout<<std::endl<<std::flush;
+cimg_library::cimg::wait(123);
+//flush
+read(tty_fd,&c,1);
+//read(tty_fd,&c,1);
+//read(tty_fd,&c,1);
+}
 
-        close(tty_fd);
+write(tty_fd,"*HEA\r\n",6);
+cimg_library::cimg::wait(123);
+        while (c!='\r')
+        {
+                if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial 
+        }
+std::cout<<std::endl<<std::flush;
+//flush
+read(tty_fd,&c,1);
+//read(tty_fd,&c,1);
+//read(tty_fd,&c,1);
+
+//        close(tty_fd);
+fd=tty_fd;
         tcsetattr(STDOUT_FILENO,TCSANOW,&old_stdio);
  
     return true;
