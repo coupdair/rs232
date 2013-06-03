@@ -10,6 +10,9 @@ all: $(PROGRAMS) $(DOCUMENTATIONS)
 
 prog:$(PROGRAMS)
 
+interactive: interactive_serial.c
+	$(CC) interactive_serial.c -o $@ $(OPT)
+
 get: serial.get.cpp Makefile serial.h serialCOM.h
 	$(CPP) $(OPT) serial.get.cpp -o $@
 

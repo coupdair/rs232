@@ -117,11 +117,13 @@ std::cerr<<class_name<<"::"<<__func__<<"(\""<<value<<"\""<<","<<number_of_try<<"
     while ((nbytes = read(fd, bufptr, buffer + sizeof(buffer) - bufptr - 1)) > 0)
       {
 	std::cerr << "reading buffer" << std::endl;
-//std::cerr<<"nbytes="<<nbytes<<"\n"<<std::flush;
+std::cerr<<"nbytes="<<nbytes<<"\n"<<std::flush;
 	bufptr += nbytes;
-	if (bufptr[-1] == '\n' || bufptr[-1] == '\r')
+	if (bufptr[-1] == '\n' )// || bufptr[-1] == '\r')
 	  break;
       }
+if (bufptr[-1] == '\n' ) std::cerr << "last is \\n\n" << std::flush;
+if (bufptr[-1] == '\r' ) {std::cerr << "last is \\r\n" << std::flush;read(fd,bufptr,1);std::cerr << "  clear last \\n\n" << std::flush;}
     std::cerr << "read OK\n" << std::flush;
     buffer[bufptr-buffer-1]='\0';
 //std::cerr<<__func__<<"/lenght(buffer)="<<strlen(buffer)<<"\n"<<std::flush;

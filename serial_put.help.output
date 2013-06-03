@@ -5,7 +5,7 @@
         ./put --message "CONF:GAIN 5"
         ./get --message "READ:GAIN?"
  version: v0.3.5
- compilation date:  (Feb  1 2013, 18:16:06)
+ compilation date:  (May 17 2013, 16:17:30)
 
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
