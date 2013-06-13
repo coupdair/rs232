@@ -54,10 +54,14 @@ version: "+std::string(RS232_VERSION)+"\n compilation date: " \
   else
   {
 ///get using writes then reads functions
+    bool is_done=false;
+    while(!is_done)
+    {//try loop
 // WRITE 
-    if(!pSerial->writes(Message))   return 1;
+      if(!pSerial->writes(Message))   return 1;
 // READ
-    pSerial->reads(value);
+      if(is_done=pSerial->reads(value)) break;
+    }//try loop
   }
   std::cout << value << std::endl;
 //CLOSE

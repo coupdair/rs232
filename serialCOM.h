@@ -210,17 +210,6 @@ public:
     tcsetattr(tty_fd,TCSANOW,&tio);
     //store serial id (for future write/read/close)
     fd=tty_fd;
-
-//test
-{
-//call for version
-writes("*VER");
-//get version
-std::string txt;
-reads(txt);
-std::cerr<<"text["<<txt.length()<<"]|"<<txt<<"|\n"; 
-}//test
-
     return true;
   }//opens
 
@@ -251,12 +240,34 @@ std::cerr<<"text["<<txt.length()<<"]|"<<txt<<"|\n";
 //std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
     //set value
     value=txt;
-    last_message_readed=value;//for information
+    if(count<tries)
+      last_message_readed=value;//for information
+    else
+    {
+      std::cerr<<class_name<<"::"<<__func__<<"/warning: time out.\n";//time out
+      std::cerr<<"read KO\n"<<std::flush;
+    }
 #if cimg_debug>1
 std::cerr<<class_name<<":NEW:"<<__func__<<"(set \""<<value<<"\")\n"<<std::flush;
 #endif
     return (count<tries);
   }//reads
+
+  bool gets(std::string ask,std::string &value,const int number_of_try=3,const int try_wait_time=20)
+  {
+    #if cimg_debug>1
+    std::cerr<<class_name<<":NEW:"<<__func__<<"(\""<<ask<<"\", value, number_of_try="<<number_of_try<<", wait_time="<<try_wait_time<<")\n"<<std::flush;
+    #endif
+    int i;
+    for(i=0;i<number_of_try;++i)
+    {
+      //WRITE 
+      this->writes(ask,number_of_try,try_wait_time);
+      //READ
+      if(this->reads(value)) break;
+    }
+    return (i<number_of_try);
+  }//gets
 
 };//Cserial_termios_8n1 class
 #endif //SERIAL_COMMUNICATION_TERMIOS
