@@ -191,45 +191,6 @@ public:
    */
   bool opens()
   {
-/*
-    struct termios tio;
-    //set serial structure
-    memset(&tio,0,sizeof(tio));
-    tio.c_iflag=0;
-    tio.c_oflag=0;
-    tio.c_cflag=CS8|CREAD|CLOCAL;//cfg.: 8n1 (see termios.h for more information)
-    tio.c_lflag=0;
-    tio.c_cc[VMIN]=1;
-    tio.c_cc[VTIME]=5;
-    //open  serial device
-#if cimg_debug>1
-    std::cerr <<class_name<<"::information: ";
-#endif
-    fd=open((const char*)port_path.c_str(), O_RDWR | O_NONBLOCK);
-    ///check
-    if (fd == SERIAL_OPEN_ERROR)
-    {
-      std::cerr<<"open_port: Unable to open "<<port_path<<" port.\n";//e.g. /dev/ttyUSB0
-      return false;
-    }
-    //setup serial device
-    cfsetospeed(&tio,B115200);// 115200 baud
-    cfsetispeed(&tio,B115200);// 115200 baud
-    tcsetattr(fd,TCSANOW,&tio);
-    std::cerr << "port is open"<<std::endl;
-{//test: get version
-unsigned char c;
-//ask     version
-const char* message="*VER\r\n";
-std::cerr<<message<<std::endl;
-write(fd,message,5);
-write(fd,message,5);
-//receive version
-std::cerr<<"read='"<<std::flush;
-while(read(fd,&c,1)>0) std::cerr<<c;
-std::cerr<<"'."<<std::endl;
-}
-*/
         struct termios tio;
         int tty_fd;
 
@@ -248,6 +209,7 @@ std::cerr<<"'."<<std::endl;
 //set serial device
         tcsetattr(tty_fd,TCSANOW,&tio);
 
+//test
 write(tty_fd,"*VER\r\n",6);
 
 //message
@@ -276,6 +238,40 @@ std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n";
 
     return true;
   }//opens
+
+  bool reads(std::string& value)
+  {
+#if cimg_debug>1
+    std::cerr<<class_name<<":NEW:"<<__func__<<"(get \""<<value<<"\")\n"<<std::flush;
+#endif
+//message
+std::string txt;txt.resize(1024);
+int t=0;
+//time out
+int tries=1234;
+int count=0;
+    //get single message
+    unsigned char c='D';
+    while (c!='\r')
+    {//get message until line break character
+      if(read(fd,&c,1)>0) txt[t++]=c;// if new data is available on the serial 
+      cimg_library::cimg::wait(1);
+      ++count;
+      if(count>tries) break;//time out
+    }
+
+std::cerr<<"time"<<std::string((count<tries)?" count=":"  out=")<<count<<".\n";//time out
+for(int i=0;i<txt.size();++i) {if(txt[i]=='\r') txt[i]='_';if(txt[i]=='\n') txt[i]='!';}
+if(t>0) txt.resize(t-1);
+std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
+
+    value=txt;
+    last_message_readed=value;//for information
+#if cimg_debug>1
+std::cerr<<class_name<<":NEW:"<<__func__<<"(set \""<<value<<"\")\n"<<std::flush;
+#endif
+    return (count<tries);
+  }//reads
 
 };//Cserial_termios_8n1 class
 #endif //SERIAL_COMMUNICATION_TERMIOS
