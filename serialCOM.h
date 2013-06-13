@@ -191,25 +191,28 @@ public:
    */
   bool opens()
   {
-        struct termios tio;
-        int tty_fd;
-
-        memset(&tio,0,sizeof(tio));
-        tio.c_iflag=0;
-        tio.c_oflag=0;
-        tio.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
-        tio.c_lflag=0;
-        tio.c_cc[VMIN]=1;
-        tio.c_cc[VTIME]=5;
- 
-        tty_fd=open((const char*)port_path.c_str(), O_RDWR | O_NONBLOCK);      
-        cfsetospeed(&tio,B115200);            // 115200 baud
-        cfsetispeed(&tio,B115200);            // 115200 baud
- 
-//set serial device
-        tcsetattr(tty_fd,TCSANOW,&tio);
+    //serial setup
+    struct termios tio;
+    memset(&tio,0,sizeof(tio));
+    tio.c_iflag=0;
+    tio.c_oflag=0;
+    tio.c_cflag=CS8|CREAD|CLOCAL;           // 8n1, see termios.h for more information
+    tio.c_lflag=0;
+    tio.c_cc[VMIN]=1;
+    tio.c_cc[VTIME]=5;
+    //open serial device
+    int tty_fd;
+    tty_fd=open((const char*)port_path.c_str(), O_RDWR | O_NONBLOCK);
+    //serial speed setup
+    cfsetospeed(&tio,B115200);            // 115200 baud
+    cfsetispeed(&tio,B115200);            // 115200 baud
+    //apply serial setup
+    tcsetattr(tty_fd,TCSANOW,&tio);
+    //store serial id (for future write/read/close)
+    fd=tty_fd;
 
 //test
+{
 write(tty_fd,"*VER\r\n",6);
 
 //message
@@ -228,14 +231,11 @@ int count=0;
       if(count>tries) break;//time out
     }
 
-//        close(tty_fd);
-fd=tty_fd;
-
 std::cerr<<"time"<<std::string((count<tries)?" count=":"  out=")<<count<<".\n";//time out
 for(int i=0;i<txt.size();++i) {if(txt[i]=='\r') txt[i]='_';if(txt[i]=='\n') txt[i]='!';}
 if(t>0) txt.resize(t-1);
 std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
-
+}//test
     return true;
   }//opens
 
