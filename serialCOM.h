@@ -266,16 +266,23 @@ std::cerr<<"'."<<std::endl;
 //set serial device
         tcsetattr(tty_fd,TCSANOW,&tio);
 
+std::string txt;txt.resize(1024);
 write(tty_fd,"*VER\r\n",6);
-cimg_library::cimg::wait(123);
+/**/
+cimg_library::cimg::wait(12);
 write(tty_fd,"*VER\r\n",6);
-cimg_library::cimg::wait(123);
+cimg_library::cimg::wait(12);
         unsigned char c='D';
+int j=0;
+int t=0;
 for(int i=0;i<2;++i)
 {
         while (c!='\r')
         {
-                if (read(tty_fd,&c,1)>0)        write(STDOUT_FILENO,&c,1);              // if new data is available on the serial 
+                if (read(tty_fd,&c,1)>0) {write(STDOUT_FILENO,&c,1);txt[t++]=c;}              // if new data is available on the serial 
+cimg_library::cimg::wait(1);
+++j;
+if(j>1234) break;//time out
         }
 std::cout<<std::endl<<std::flush;
 cimg_library::cimg::wait(123);
@@ -284,7 +291,7 @@ read(tty_fd,&c,1);
 //read(tty_fd,&c,1);
 //read(tty_fd,&c,1);
 }
-
+/*
 write(tty_fd,"*HEA\r\n",6);
 cimg_library::cimg::wait(123);
         while (c!='\r')
@@ -294,16 +301,20 @@ cimg_library::cimg::wait(123);
 std::cout<<std::endl<<std::flush;
 //flush
 read(tty_fd,&c,1);
+*/
 //read(tty_fd,&c,1);
 //read(tty_fd,&c,1);
 
 //        close(tty_fd);
 fd=tty_fd;
         tcsetattr(STDOUT_FILENO,TCSANOW,&old_stdio);
- 
+std::cerr<<"j="<<j<<".\n";//time out
+for(int i=0;i<txt.size();++i) {if(txt[i]=='\r') txt[i]='_';if(txt[i]=='\n') txt[i]='!';}
+txt.resize(t-1);
+std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
     return true;
   }//opens
 
 };//Cserial_termios_8n1 class
-#endif //SERIAL_COMMUNICATION_TERMIOSCserial_termios
+#endif //SERIAL_COMMUNICATION_TERMIOS
 
