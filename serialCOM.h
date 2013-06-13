@@ -213,29 +213,14 @@ public:
 
 //test
 {
-write(tty_fd,"*VER\r\n",6);
-
-//message
-std::string txt;txt.resize(1024);
-int t=0;
-//time out
-int tries=1234;
-int count=0;
-    //get single message
-    unsigned char c='D';
-    while (c!='\r')
-    {//get message until line break character
-      if(read(tty_fd,&c,1)>0) txt[t++]=c;// if new data is available on the serial 
-      cimg_library::cimg::wait(1);
-      ++count;
-      if(count>tries) break;//time out
-    }
-
-std::cerr<<"time"<<std::string((count<tries)?" count=":"  out=")<<count<<".\n";//time out
-for(int i=0;i<txt.size();++i) {if(txt[i]=='\r') txt[i]='_';if(txt[i]=='\n') txt[i]='!';}
-if(t>0) txt.resize(t-1);
-std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
+//call for version
+writes("*VER");
+//get version
+std::string txt;
+reads(txt);
+std::cerr<<"text["<<txt.length()<<"]|"<<txt<<"|\n"; 
 }//test
+
     return true;
   }//opens
 
@@ -244,12 +229,12 @@ std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n";
 #if cimg_debug>1
     std::cerr<<class_name<<":NEW:"<<__func__<<"(get \""<<value<<"\")\n"<<std::flush;
 #endif
-//message
-std::string txt;txt.resize(1024);
-int t=0;
-//time out
-int tries=1234;
-int count=0;
+    //message
+    std::string txt;txt.resize(1024);
+    int t=0;
+    //time out
+    int tries=1234;
+    int count=0;
     //get single message
     unsigned char c='D';
     while (c!='\r')
@@ -259,12 +244,12 @@ int count=0;
       ++count;
       if(count>tries) break;//time out
     }
-
-std::cerr<<"time"<<std::string((count<tries)?" count=":"  out=")<<count<<".\n";//time out
-for(int i=0;i<txt.size();++i) {if(txt[i]=='\r') txt[i]='_';if(txt[i]=='\n') txt[i]='!';}
-if(t>0) txt.resize(t-1);
-std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
-
+//std::cerr<<"time"<<std::string((count<tries)?" count=":"  out=")<<count<<".\n";//time out
+    //clean text message
+    for(int i=0;i<txt.size();++i) {if(txt[i]=='\r') txt[i]='_';if(txt[i]=='\n') txt[i]='!';}
+    if(t>0) txt.resize(t-1);
+//std::cerr<<"text["<<t<<","<<txt.length()<<"]|"<<txt<<"|\n"; 
+    //set value
     value=txt;
     last_message_readed=value;//for information
 #if cimg_debug>1
